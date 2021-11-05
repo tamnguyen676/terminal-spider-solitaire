@@ -17,15 +17,19 @@ MIN_ROWS = 14
 MIN_COLS = 85
 
 def start(screen):
-    menu = MainMenu(screen, MIN_ROWS, 85)
-    screen.scrollok(1)
+    screen.scrollok(True)
+    screen.idcok(False)
+    screen.idlok(False)
+
+    menu = MainMenu(screen, MIN_ROWS, MIN_COLS)
+
     while True:
         menu.show_main_menu()
         suits_to_use = menu.wait_for_input()
         if suits_to_use in {1, 2, 4}:
             min_cols = MIN_COLS if suits_to_use != 4 else MIN_COLS + 10
             graphics = GUI(GameEngine(suits=suits_to_use), screen, MIN_ROWS, min_cols)
-            screen.clear()
+            screen.erase()
             screen.refresh()
             graphics.main_loop()
 

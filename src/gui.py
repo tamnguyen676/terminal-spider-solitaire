@@ -126,7 +126,7 @@ class GUI(ScreenInterface):
         self.print_centered(strings, bold_last=True)
 
     def show_board(self):
-        self.screen.clear()
+        self.screen.erase()
         rows_to_display = len(max(self.game_engine.board.columns, key=lambda column: len(column))) + 5
         if rows_to_display > self.num_rows:
             self.force_screen_size(rows_to_display, self.min_cols)
@@ -216,13 +216,13 @@ class GUI(ScreenInterface):
                             self._handle_resize(self._print_info)
                         try:
                             if chr(keycode).lower() == 'q':
-                                self.screen.clear()
+                                self.screen.erase()
                                 self.show_board()
                                 break
                         except:
                             pass
                 elif char.lower() == 'q':
-                    self.screen.clear()
+                    self.screen.erase()
                     return
             except ValueError:
                 pass

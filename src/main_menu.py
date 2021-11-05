@@ -39,7 +39,7 @@ class MainMenu(ScreenInterface):
             self.screen.addstr(to_print, curses.color_pair(3))
 
     def show_main_menu(self):
-        self.screen.clear()
+        self.screen.erase()
         self.force_screen_size(self.min_rows, self.min_cols)
         if self.num_rows > 20:
             self.print_large_title()
