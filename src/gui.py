@@ -229,7 +229,7 @@ class GUI(ScreenInterface):
 
     def _handle_resize(self, func_after_resize):
         self.num_rows, self.num_cols = self.screen.getmaxyx()
-        if self.num_cols < self.min_cols:
+        if self.num_cols < self.min_cols or self.num_rows < self.min_rows:
             self.force_screen_size(self.min_rows, self.min_cols)
         func_after_resize()
 

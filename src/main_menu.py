@@ -41,10 +41,16 @@ class MainMenu(ScreenInterface):
     def show_main_menu(self):
         self.screen.clear()
         self.force_screen_size(self.min_rows, self.min_cols)
-        self.print_large_title() if self.num_rows > 20 else self.print_small_title()
-        self.print_horizontally_centered('[1] Play 1 Suit\n\n')
-        self.print_horizontally_centered('[2] Play 2 Suit\n\n')
-        self.print_horizontally_centered('[3] Play 4 Suit\n\n')
+        if self.num_rows > 20:
+            self.print_large_title()
+            self.print_horizontally_centered('[1] Play 1 Suit\n\n')
+            self.print_horizontally_centered('[2] Play 2 Suit\n\n')
+            self.print_horizontally_centered('[3] Play 4 Suit\n\n')
+        else:
+            self.print_small_title()
+            self.print_horizontally_centered('[1] Play 1 Suit\n')
+            self.print_horizontally_centered('[2] Play 2 Suit\n')
+            self.print_horizontally_centered('[3] Play 4 Suit\n')
         self.print_horizontally_centered('[Q] Quit\n\n')
         self.print_horizontally_centered('Developed by Tam Nguyen\n')
         self.print_horizontally_centered('https://www.linkedin.com/in/tamnguyen676/\n')
