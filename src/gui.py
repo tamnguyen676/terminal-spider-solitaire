@@ -104,6 +104,7 @@ class GUI(ScreenInterface):
         self.screen.addstr(5, x, '[n] Deal new cards')
         self.screen.addstr(7, x, '[u] Undo')
         self.screen.addstr(9, x, '[i] Info')
+        self.screen.addstr(11, x, '[q] Main Menu')
 
     def _print_info(self):
         strings = ['To navigate and move the cursor, use the arrow keys.',
@@ -115,7 +116,7 @@ class GUI(ScreenInterface):
                    'cursor to a column and press enter/space to drop it in that column.\n',
                    'Press u or backspace to undo a move or a selection',
                    'Press n to deal new cards',
-                   'Press q to return back to the main menu\n',
+                   'Press q (while in game) to return back to the main menu\n',
                    'For every move and every move you undo, 1 point is lost.',
                    'Every suit completed, 100 points are gained. The max score is 1254.\n',
                    'For game info and rules: https://en.wikipedia.org/wiki/Spider_(solitaire)\n',
@@ -179,10 +180,14 @@ class GUI(ScreenInterface):
                                 self.game_engine.hold_cards(self.cursor_col, self.cursor_row)
                     else:
                         holding_row, holding_col = self.game_engine.holding_cards
-                        best_col = self.game_engine.find_best_col_to_place(holding_row, holding_col)
-                        game_ended = self._move_cards(holding_row, holding_col, best_col)
+                        if self.game_engine.holding_cards[1] == self.cursor_col:
+                            dest_col_num = self.game_engine.find_best_col_to_place(holding_row, holding_col)
+                        else:
+                            dest_col_num = self.cursor_col
+                        game_ended = self._move_cards(holding_row, holding_col, dest_col_num)
                         if game_ended:
                             return
+
                     self.show_board()
                 elif 48 <= keycode <= 57:
                     col_num = int(char)
@@ -197,9 +202,11 @@ class GUI(ScreenInterface):
                     self.game_engine.deal_new_cards()
                     self.show_board()
                 elif char.lower() == 'u' or keycode == curses.KEY_BACKSPACE:
-                    if len(self.game_engine.previous_state) > 0:
+                    if self.game_engine.holding_cards != (None, None):
+                        self.game_engine.unhold_cards()
+                    elif len(self.game_engine.previous_state) > 0:
                         self.game_engine.undo()
-                        self.show_board()
+                    self.show_board()
                 elif char.lower() == 'i':
                     self._print_info()
                     while True:
