@@ -1,7 +1,7 @@
 # terminal-spider-solitaire
 A Minimalistic Spider Solitaire Game For Your CLI
 
-Designed to be simple, clean, and fast. Supports 1 suit, 2 suit, and 4 suit versions of the game.
+Designed to be simple, clean, and fast. Supports 1 Suit, 2 Suit, and 4 Suit versions of the game.
 
 ## Controls
 To navigate and move the cursor, use the arrow keys. Vim bindings are also valid (h,j,k,l). You can also press the number of the column to jump to that column.
