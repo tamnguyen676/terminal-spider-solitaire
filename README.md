@@ -3,6 +3,18 @@ A Minimalistic Spider Solitaire Game For Your CLI
 
 Designed to be simple, clean, and fast. Supports 1 Suit, 2 Suit, and 4 Suit versions of the game.
 
+## Installation
+Clone repo
+
+`git clone https://github.com/tamnguyen676/terminal-spider-solitaire.git`
+
+
+Start the game by executing the `spider-solitaire` file
+
+`./spider-solitaire`
+
+NOTE: Requires `asciimatics` python dependency. If you are getting an error, try running `pip3 install asciimatics`
+
 ## Controls
 To navigate and move the cursor, use the arrow keys. Vim bindings are also valid (h,j,k,l). You can also press the number of the column to jump to that column.
 
