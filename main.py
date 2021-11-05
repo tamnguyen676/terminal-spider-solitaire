@@ -13,14 +13,14 @@ curses.curs_set(0)
 
 
 def start(screen):
-    menu = MainMenu(screen, 20, 85)
+    menu = MainMenu(screen, 17, 85)
     screen.scrollok(1)
     while True:
         menu.show_main_menu()
         suits_to_use = menu.wait_for_input()
         if suits_to_use in {1, 2, 4}:
             min_cols = 85 if suits_to_use != 4 else 95
-            graphics = GUI(GameEngine(suits=suits_to_use), screen, 20, min_cols)
+            graphics = GUI(GameEngine(suits=suits_to_use), screen, 17, min_cols)
             screen.clear()
             screen.refresh()
             graphics.main_loop()

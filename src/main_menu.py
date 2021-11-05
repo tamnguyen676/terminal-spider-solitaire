@@ -6,7 +6,7 @@ class MainMenu(ScreenInterface):
     def __init__(self, screen, min_rows, min_cols):
         super().__init__(screen, min_rows, min_cols)
 
-    def print_title(self):
+    def print_large_title(self):
         title = \
 '''                                                                        ________
  _____       _     _             _____       _   _        _            |        |
@@ -24,10 +24,24 @@ class MainMenu(ScreenInterface):
             to_print = spaces + line + '\n' if i != len(line) - 1 else ''
             self.screen.addstr(to_print, curses.color_pair(3))
 
+    def print_small_title(self):
+        title = \
+'''  ___      _    _           ___      _ _ _        _         
+ / __|_ __(_)__| |___ _ _  / __| ___| (_) |_ __ _(_)_ _ ___ 
+ \__ \ '_ \ / _` / -_) '_| \__ \/ _ \ | |  _/ _` | | '_/ -_)
+ |___/ .__/_\__,_\___|_|   |___/\___/_|_|\__\__,_|_|_| \___|
+     |_| '''.split('\n')
+        width = self.num_cols
+        mid_str = len(title[0]) // 2
+        spaces = ' ' * int(width / 2 - mid_str)
+        for i, line in enumerate(title):
+            to_print = spaces + line + '\n' if i != len(line) - 1 else ''
+            self.screen.addstr(to_print, curses.color_pair(3))
+
     def show_main_menu(self):
         self.screen.clear()
-        self.force_screen_size(20, 80)
-        self.print_title()
+        self.force_screen_size(self.min_rows, self.min_cols)
+        self.print_large_title() if self.num_rows > 20 else self.print_small_title()
         self.print_horizontally_centered('[1] Play 1 Suit\n\n')
         self.print_horizontally_centered('[2] Play 2 Suit\n\n')
         self.print_horizontally_centered('[3] Play 4 Suit\n\n')

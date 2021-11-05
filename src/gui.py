@@ -15,7 +15,7 @@ class GUI(ScreenInterface):
 
         self.cyan = curses.color_pair(1)
         self.red = curses.color_pair(2)
-        self.black = curses.color_pair(3)
+        self.green = curses.color_pair(3)
 
         self.column_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
 
@@ -99,7 +99,8 @@ class GUI(ScreenInterface):
 
     def _print_side_bar(self):
         x = self.padding * 10 + 5
-        self.screen.addstr(1, x, f'Score: {self.game_engine.score}')
+        self.screen.addstr(1, x, f'Score: ')
+        self.screen.addstr(str(self.game_engine.score), self.green)
         self.screen.addstr(3, x, '[Space/Enter] Select')
         self.screen.addstr(5, x, '[n] Deal new cards')
         self.screen.addstr(7, x, '[u] Undo')
