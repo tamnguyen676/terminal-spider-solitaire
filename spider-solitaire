@@ -1,0 +1,4 @@
+#!/bin/sh
+
+MAIN_FILE="${PWD}/src/main.py"
+python3 ${MAIN_FILE}

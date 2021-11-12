@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-from src.game_engine import GameEngine
-from src.gui import GUI
-from src.main_menu import MainMenu
+from game_engine import GameEngine
+from gui import GUI
+from main_menu import MainMenu
 import curses
 
 curses.initscr()
@@ -15,6 +15,7 @@ curses.curs_set(0)
 
 MIN_ROWS = 14
 MIN_COLS = 85
+
 
 def start(screen):
     screen.scrollok(True)
@@ -35,7 +36,3 @@ def start(screen):
 
 
 curses.wrapper(start)
-
-# TODO
-# Allow moving held cards with arrow
-# Display instructions and points

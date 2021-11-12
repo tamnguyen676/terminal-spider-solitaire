@@ -1,5 +1,5 @@
-from src.board import Board
-from src.deck import Card
+from board import Board
+from deck import Card
 
 
 class GameEngine:
@@ -14,8 +14,8 @@ class GameEngine:
         source_column = self.board.columns[from_col]
         dest_column = self.board.columns[to_col]
 
-        card = source_column[row]
-        valid_transfer = len(dest_column) == 0 or dest_column[-1].equals(card, self.suits, offset=1)
+        original_card = source_column[row]
+        valid_transfer = len(dest_column) == 0 or dest_column[-1].equals(original_card, suits=1, offset=1)
         can_move_next_card = True
 
         if valid_transfer:
@@ -24,13 +24,14 @@ class GameEngine:
 
         while valid_transfer and can_move_next_card:
             card = source_column[row]
-            valid_transfer = len(dest_column) == 0 or dest_column[-1].equals(card, self.suits, offset=1)
+            suits = 1 if card == original_card else self.suits
+            valid_transfer = len(dest_column) == 0 or dest_column[-1].equals(card, suits, offset=1)
             self.board.move_card(row, from_col, to_col)
             can_move_next_card = row < len(source_column) and card.equals(source_column[row], self.suits, offset=1)
 
         source_column.reveal_last()
-        game_ended = self.board.move_cards_to_completed(to_col) if self.contains_complete_sequence(to_col) else False
-        return game_ended
+        self.check_for_completed_sequence(to_col)
+        return self.has_game_ended()
 
     def hold_cards(self, column_num, row_num):
         column = self.board.columns[column_num]
@@ -50,21 +51,75 @@ class GameEngine:
     def find_best_col_to_place(self, row_num, col_num):
         card = self.board.columns[col_num][row_num]
         empty_column_num = None
-        consec_cards = [0 for _ in range(10)]
+        priorities = [(1, 0) for _ in range(10)]
+
         for i, column in enumerate(self.board.columns):
+            if i == col_num:
+                continue
+
             if len(column) == 0:
                 empty_column_num = i
+                continue
+
             j = len(column) - 1
             prev_card = card
-            while j >= 0 and column[j].equals(prev_card, self.suits, offset=1):
-                consec_cards[i] += 1
-                prev_card = column[j]
-                j -= 1
+            while j >= 0:
+                first_move = j == len(column) - 1
+                suits = 1 if first_move else self.suits
+                valid_transfer = column[j].equals(prev_card, suits, offset=1)
+                if valid_transfer:
+                    if first_move:
+                        priority = self._find_priority_best_col(column[j], prev_card)
+                        priorities[i] = (priority, 0)
+                    priorities[i] = priorities[i][0], priorities[i][1] + 1
+                    prev_card = column[j]
+                    j -= 1
+                else:
+                    break
 
-        if max(consec_cards) == 0:
+        highest_priority_col = self._find_highest_priority_best_col(priorities)
+
+        if highest_priority_col is None:
             return col_num if empty_column_num is None else empty_column_num
 
-        return max(range(10), key=lambda i: consec_cards[i])
+        return highest_priority_col
+
+    def _find_priority_best_col(self, card, prev_card):
+        if self.suits == 1:
+            return 1
+
+        same_color = card.is_red == prev_card.is_red
+        if self.suits == 2:
+            return 2 if same_color else 1
+
+        same_suit = card.suit == prev_card.suit
+        return 4 if same_suit else 2 if same_color else 1
+
+    def _find_highest_priority_best_col(self, priorities):
+        if all(tup[1] == 0 for tup in priorities):
+            return None
+
+        if self.suits == 1:
+            return max(range(10), key=lambda i: priorities[i][1])
+
+        same_suit_cards = []
+        same_color_cards = []
+        other_cards = []
+        for i in range(10):
+            if priorities[i][0] == 4:
+                same_suit_cards.append((i, priorities[i][1]))
+            elif priorities[i][0] == 2:
+                same_color_cards.append((i, priorities[i][1]))
+            else:
+                other_cards.append((i, priorities[i][1]))
+        if len(same_suit_cards) > 0:
+            return max(same_suit_cards, key=lambda tup: tup[1])[0]
+        elif len(same_color_cards) > 0:
+            return max(same_color_cards, key=lambda tup: tup[1])[0]
+        elif len(other_cards) > 0:
+            return max(other_cards, key=lambda tup: tup[1])[0]
+        else:
+            return None
 
     def find_best_row_idx(self, col_number):
         column = self.board.columns[col_number]
@@ -86,7 +141,10 @@ class GameEngine:
 
         return best_idx
 
-    def contains_complete_sequence(self, col_number):
+    def has_game_ended(self):
+        return all(self.board.completed)
+
+    def check_for_completed_sequence(self, col_number):
         column = self.board.columns[col_number]
         if len(column) >= 13 and column[-1].value == 1:
 
@@ -94,12 +152,10 @@ class GameEngine:
             val_to_check = 1
             for i in range(len(column) - 1, len(column) - 14, -1):
                 if not column[i].equals(ref_card, self.suits, val_to_check) or not column[i].revealed:
-                    return False
+                    return
                 val_to_check += 1
             self.score += 100
-            return True
-        else:
-            return False
+            self.board.move_cards_to_completed(col_number)
 
     def can_hold(self, row_num, col_num):
         column = self.board.columns[col_num]
@@ -117,6 +173,8 @@ class GameEngine:
     def deal_new_cards(self):
         self.previous_state.append(self.board.copy())
         self.board.deal_from_stock()
+        for i in range(len(self.board.columns)):
+            self.check_for_completed_sequence(i)
 
     def undo(self):
         self.board = self.previous_state.pop()

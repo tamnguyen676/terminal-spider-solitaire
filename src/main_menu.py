@@ -1,4 +1,4 @@
-from src.screen_interface import ScreenInterface
+from screen_interface import ScreenInterface
 import curses
 import sys
 

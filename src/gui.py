@@ -1,5 +1,5 @@
-from src.fireworks import start_fireworks
-from src.screen_interface import ScreenInterface
+from fireworks import start_fireworks
+from screen_interface import ScreenInterface
 import curses
 
 

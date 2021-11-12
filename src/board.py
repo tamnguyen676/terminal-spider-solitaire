@@ -1,4 +1,4 @@
-from src.deck import Cards, Decks
+from deck import Cards, Decks
 from copy import deepcopy
 
 
@@ -42,7 +42,7 @@ class Board:
         for i in range(8):
             if not self.completed[i]:
                 self.completed[i] = True
-                return i == 7
+                break
 
     def move_card(self, row, from_col, to_col):
         source_column = self.columns[from_col]
