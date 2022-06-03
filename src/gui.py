@@ -1,4 +1,3 @@
-from fireworks import start_fireworks
 from screen_interface import ScreenInterface
 import curses
 
@@ -241,8 +240,15 @@ class GUI(ScreenInterface):
         self.show_board()
         if game_ended:
             curses.napms(250)
-            start_fireworks(self.game_engine.score)
+            self.print_centered(['You Win!\n', f'Score: {self.game_engine.score}\n', 'Press Q to Return to Menu'])
+            while True:
+                keycode = self.screen.getch()
+                if keycode == curses.KEY_RESIZE:
+                    self._handle_resize(self._print_info)
+                try:
+                    if chr(keycode).lower() == 'q':
+                        self.screen.erase()
+                        break
+                except:
+                    pass
         return game_ended
-
-
-

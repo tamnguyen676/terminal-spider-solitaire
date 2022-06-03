@@ -13,8 +13,6 @@ Start the game by executing the `spider-solitaire` file
 
 `./spider-solitaire`
 
-NOTE: Requires `asciimatics` python dependency. If you are getting an error, try running `pip3 install asciimatics`
-
 ## Controls
 To navigate and move the cursor, use the arrow keys. Vim bindings are also valid (h,j,k,l). You can also press the number of the column to jump to that column.
 

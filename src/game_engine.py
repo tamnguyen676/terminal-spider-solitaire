@@ -180,6 +180,3 @@ class GameEngine:
         self.board = self.previous_state.pop()
         self.score -= 1
         self.unhold_cards()
-
-# BUG Not pinned very well
-# Crashed if column too long
